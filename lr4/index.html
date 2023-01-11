@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Лабораторная работа №4 - ITMO-ICT-WebDevelopment</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
+
+        <script src="../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">ITMO-ICT-WebDevelopment</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Главная</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../lr1/" class="nav-link">Лабораторная работа №1</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../lr2/" class="nav-link">Лабораторная работа №2</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../pr3/" class="nav-link">Практическая работа №3</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../lr3/" class="nav-link">Лабораторная работа №3</a>
+                            </li>
+                            <li class="navitem active">
+                                <a href="./" class="nav-link">Лабораторная работа №4</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../lr3/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#no4" class="nav-link">Лабораторная работа №4</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#vuejs" class="nav-link">Мигрировать ранее написанный сайт на фреймворк Vue.JS.</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="no4">Лабораторная работа №4</h1>
+<h2 id="vuejs">Мигрировать ранее написанный сайт на фреймворк Vue.JS.</h2>
+<p>Минимальные требования:</p>
+<ul>
+<li>Должен быть подключён роутер</li>
+<li>Должна быть реализована работа с внешним API</li>
+<li>Разумное деление на компоненты</li>
+</ul>
+<p>Основные файлы проекта:</p>
+<p><code>router</code></p>
+<p><em>index.js</em></p>
+<pre><code class="language-javascript">import {createRouter, createWebHistory} from 'vue-router'
+import MainPage from &quot;@/views/MainPage.vue&quot;;
+import EventPage from &quot;@/views/EventPage.vue&quot;;
+import SignUpPage from &quot;@/views/SignUpPage.vue&quot;;
+import SignInPage from &quot;@/views/SignInPage.vue&quot;;
+import ProfilePage from &quot;@/views/ProfilePage.vue&quot;;
+import CalendarPage from &quot;@/views/CalendarPage.vue&quot;;
+
+// массив с роутами
+const routes = [
+    {path: &quot;/main&quot;, component: MainPage},
+    {path: &quot;/event/:id&quot;, component: EventPage},
+    {path: &quot;/signup&quot;, component: SignUpPage},
+    {path: &quot;/signin&quot;, component: SignInPage},
+    {path: &quot;/profile&quot;, component: ProfilePage},
+    {path: &quot;/calendar&quot;, component: CalendarPage}
+]
+
+const router = createRouter({
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes
+})
+
+// экспортируем сконфигурированный роутер
+export default router
+</code></pre>
+<p><code>stores</code></p>
+<p><em>index.js</em></p>
+<pre><code class="language-javascript">import { persist } from 'pinia-persists'
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
+
+pinia.use(persist())
+
+export default pinia
+</code></pre>
+<p><em>cards.js</em></p>
+<p>Хранилище карточек мероприятий, с действиями загрузить все карточки и загрузить одну.</p>
+<pre><code class="language-javascript">import {defineStore} from 'pinia'
+import {cardApi} from '@/api'
+
+const useCardsStore = defineStore('cards', {
+        state: () =&gt; ({
+            cards: [],
+        }),
+
+        actions: {
+            async loadCards() {
+                const response = await cardApi.getAll();
+
+                this.cards = response.data;
+
+                return response;
+            },
+
+            async loadOneCard(eventId) {
+                return await cardApi.getOne(eventId)
+            },
+
+        }
+    }
+)
+export default useCardsStore
+</code></pre>
+<p><em>users.js</em></p>
+<p>Хранилище пользвателей: хранится текущий юзер, его токен и его карточки. Действия на регистрацию и авторизацию, получение информации о юзере, добавление карточки и получение карточек юзера, а также выход из системы.</p>
+<pre><code class="language-javascript">import {defineStore} from 'pinia'
+import {userEventsApi, usersApi} from &quot;@/api&quot;;
+
+
+const useUsersStore = defineStore('users', {
+    state: () =&gt; ({
+        user: {},
+        token: null,
+        userEvents: []
+    }),
+
+    actions: {
+        async CurrentUser() {
+            let response = null
+
+            if (this.token) {
+                response = await usersApi.fetchCurrentUser(this.token)
+                this.user = response.data?.username ? response.data : {}
+                console.log(this.user)
+            }
+            return this.user
+        },
+        async login(credentials) {
+            const response = await usersApi.login(credentials)
+
+            this.token = response?.data?.auth_token || null
+            if (this.token) {
+                window.localStorage.setItem('user_token', this.token)
+            }
+
+            return this.token
+        },
+        async signUp(user) {
+            return await usersApi.signUp(user)
+        },
+        async logout() {
+            let response = null
+
+            if (this.token) {
+                response = await usersApi.logout(this.token)
+                if (response.status === 204) {
+                    window.localStorage.removeItem('user_token')
+                    this.token = ''
+                    this.user = {}
+                    this.userEvents = []
+                }
+            }
+
+            return response
+        },
+
+        async getUserEvents() {
+            const response = await userEventsApi.getByUserId(this.user.id)
+
+            this.userEvents = response.data
+            console.log(this.userEvents)
+
+            return response
+        },
+
+        async addUserEvent(data) {
+
+            return await userEventsApi.enrollUser(data)
+        }
+    }
+})
+
+export default useUsersStore
+</code></pre>
+<p><code>api</code></p>
+<p><em>index.js</em></p>
+<pre><code class="language-javascript">import instance from &quot;@/api/instance&quot;
+import CardApi from &quot;@/api/cards&quot;
+import UsersApi from &quot;@/api/users&quot;
+import UserEventsApi from &quot;@/api/userEvents&quot;
+
+const cardApi = new CardApi(instance)
+const usersApi = new UsersApi(instance)
+
+const userEventsApi = new UserEventsApi(instance)
+
+export {
+    cardApi,
+    usersApi,
+    userEventsApi
+}
+</code></pre>
+<p><em>instance.js</em></p>
+<pre><code class="language-javascript">import axios from 'axios'
+
+const apiURL = 'http://localhost:8000'
+
+const instance = axios.create({
+ baseURL: apiURL
+})
+
+export default instance
+
+</code></pre>
+<p><em>cards.js</em></p>
+<p>Обращение к серверу для получения списка мероприятий и мероприятия по id</p>
+<pre><code class="language-javascript">class CardApi {
+    constructor(instance) {
+        this.API = instance
+    }
+
+    getAll = async () =&gt; {
+        return this.API({
+            url: '/api/events/list/'
+        })
+    }
+
+    getOne = async (eventId) =&gt; {
+        return this.API({
+            url: `/api/event/${eventId}/`
+        })
+    }
+}
+
+export default CardApi
+</code></pre>
+<p><em>users.js</em></p>
+<p>Обращение к серверу для регистрации, входа, выхода, получения информации и текущем юзере</p>
+<pre><code class="language-javascript">class UsersApi {
+  constructor(instance) {
+    this.API = instance
+  }
+
+  signUp = async (data) =&gt; {
+    return this.API({
+      method: 'POST',
+      url: '/auth/users/',
+      data,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  login = async (data) =&gt; {
+    return this.API({
+      method: 'POST',
+      url: '/auth/token/login/',
+      data,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  }
+
+  logout = async (token) =&gt; {
+    return this.API({
+      method: 'POST',
+      url: '/auth/token/logout/',
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+    })
+  }
+
+  fetchCurrentUser = async (token) =&gt; {
+    return this.API({
+      url: '/auth/users/me/',
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+    })
+  }
+}
+
+export default UsersApi
+</code></pre>
+<p><em>userEvents.js</em></p>
+<p>Обращение к серверу для получения мероприятий пользователя и для записи пользователя на мероприятие</p>
+<pre><code class="language-javascript">class UserEventsApi {
+    constructor(instance) {
+        this.API = instance
+    }
+
+    getByUserId = async (userId) =&gt; {
+        return this.API({
+            url: `/api/user/events/${userId}/`
+        })
+    }
+
+    enrollUser = async (data) =&gt; {
+        return this.API({
+            url: '/api/enroll/create/',
+            method: 'POST',
+            data,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+}
+
+export default UserEventsApi
+</code></pre>
+<p><code>components</code></p>
+<p><em>Card.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; display=&quot;none&quot;&gt;
+    &lt;symbol id=&quot;ShowMore&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;path
+          d=&quot;M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z&quot;/&gt;
+    &lt;/symbol&gt;
+  &lt;/svg&gt;
+  &lt;img :src=&quot;img_src&quot; class=&quot;card-img-top mt-2&quot; style=&quot;height: 210px&quot; :alt=&quot;title&quot;&gt;
+  &lt;div class=&quot;card-body d-flex flex-column&quot;&gt;
+    &lt;p class=&quot;card-title&quot; style=&quot;font-size:18pt&quot;&gt;&lt;b&gt;{{ title }}&lt;/b&gt;&lt;/p&gt;
+    &lt;p class=&quot;card-text&quot;&gt;{{ address }}&lt;/p&gt;
+    &lt;p class=&quot;card-text&quot;&gt;{{ short_description }}&lt;/p&gt;
+    &lt;button :id=&quot;'event_showmore_'+ id&quot; aria-pressed=&quot;true&quot; @click=&quot;goToEvent(id)&quot;
+            class=&quot;btn mt-auto btn-dark purple_button event_showmore_btn&quot;&gt;Show more
+      &lt;svg class=&quot;icon&quot;&gt;
+        &lt;use xlink:href=&quot;#ShowMore&quot;&gt;&lt;/use&gt;
+      &lt;/svg&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+
+export default {
+  name: 'Event',
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    },
+    img_src: {
+      type: String,
+      required: true
+    },
+    short_description: {
+      type: String,
+      required: true
+    },
+    id: {
+      type: Number,
+      required: true
+    }
+  },
+  methods: {
+    goToEvent(event_id) {
+      this.$router.push(`/event/${event_id}`)
+    },
+  },
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Event.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;main class=&quot;container-xl p-5 mb-5&quot;&gt;
+    &lt;section class=&quot;row d-flex&quot; id=&quot;event_page&quot;&gt;
+      &lt;h1 class=&quot;row mb-3 &quot;&gt;{{ title }}&lt;/h1&gt;
+      &lt;div class=&quot;row d-flex col-lg-4 col-md-4 col-sm-4&quot;&gt;
+        &lt;ul&gt;
+          &lt;h5 class=&quot;text mt-2&quot;&gt;Address:&lt;/h5&gt;
+          &lt;h5 class=&quot;text mt-2&quot;&gt;{{ address }}&lt;/h5&gt;
+          &lt;h5 class=&quot;text mt-5&quot;&gt;Date:&lt;/h5&gt;
+          &lt;h5 class=&quot;text mt-2&quot; id=&quot;date&quot;&gt;&lt;/h5&gt;
+          &lt;h5 class=&quot;text mt-5&quot;&gt;&lt;a :href=&quot;website&quot;&gt;Website&lt;/a&gt;&lt;/h5&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;row d-flex col-lg-8 col-md-8 col-sm-8&quot;&gt;
+        &lt;img class=&quot;align-self-end&quot; :src=&quot;img_src&quot; :alt=&quot;title&quot;&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;mx-1 mb-5 mt-4&quot;&gt;
+        &lt;button :id=&quot;'event_enroll'+ id&quot; class=&quot;btn mt-auto btn-dark purple_button&quot; :disabled=&quot;!isActive&quot;
+                @click=&quot;enroll(this.id)&quot; aria-pressed=&quot;true&quot;&gt;Enroll
+        &lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;card border-light mb-3 mx-auto&quot;&gt;
+        &lt;div class=&quot;card-header&quot;&gt;Description&lt;/div&gt;
+        &lt;div class=&quot;card-body&quot;&gt;
+          &lt;h5 class=&quot;card-title&quot;&gt;{{ short_description }}&lt;/h5&gt;
+          &lt;p class=&quot;card-text&quot;&gt;{{ full_description }}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+
+import {mapActions, mapState} from &quot;pinia&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+import moment from &quot;moment&quot;;
+
+export default {
+  name: &quot;EventBlock&quot;,
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      required: true
+    },
+    website: {
+      type: String,
+      required: true
+    },
+    img_src: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: String,
+      required: true
+    },
+    full_description: {
+      type: String,
+      required: true
+    },
+    short_description: {
+      type: String,
+      required: true
+    },
+    id: {
+      type: Number,
+      required: true
+    }
+  },
+  data() {
+    return {
+      isActive: true,
+    }
+  },
+  computed: {
+    ...mapState(useUsersStore, ['user', 'token']),
+  },
+  mounted() {
+    this.convertDate()
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['addUserEvent']),
+    async enroll(id) {
+      const userEvent = {
+        &quot;event&quot;: id,
+        &quot;user&quot;: this.user.username
+      }
+      console.log(userEvent)
+      const response = await this.addUserEvent(userEvent);
+      console.log(response)
+      this.isActive = false
+    },
+    convertDate() {
+      let form_date = moment(this.date).utc().format('Do MMMM YYYY, HH:mm')
+      console.log(form_date)
+      document.getElementById('date').innerHTML=form_date
+      return form_date
+    },
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Main.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;main class=&quot;container-xl p-5 mb-5&quot;&gt;
+    &lt;h1 class=&quot;row mb-3 justify-content-center&quot;&gt;Events in Saint-Petersburg&lt;/h1&gt;
+    &lt;div class=&quot;text-center&quot;&gt;
+      &lt;img src=&quot;src/assets/img/spb.jpg&quot; class=&quot;rounded col-6&quot; alt=&quot;Photo of Saint-Petersburg&quot;&gt;
+    &lt;/div&gt;
+    &lt;section class=&quot;filtration&quot; @change=&quot;filter&quot;&gt;
+      &lt;div class=&quot;form text-center col-sm-6 col-lg-4 col-xl-3 mt-3 mx-auto&quot;&gt;
+        &lt;select class=&quot;filter form-select-sm&quot; aria-label=&quot;.form-select-sm example&quot; id=&quot;filter_by_type&quot;&gt;
+          &lt;option selected&gt;Event type&lt;/option&gt;
+          &lt;option value=&quot;theater&quot;&gt;Theaters&lt;/option&gt;
+          &lt;option value=&quot;concert&quot;&gt;Concerts&lt;/option&gt;
+          &lt;option value=&quot;exhibition&quot;&gt;Exhibitions&lt;/option&gt;
+          &lt;option value=&quot;activity&quot;&gt;Outdoor activities&lt;/option&gt;
+          &lt;option value=&quot;festival&quot;&gt;Festivals&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form text-center col-sm-6 col-lg-4 col-xl-3 mt-3 mx-auto&quot;&gt;
+        &lt;select class=&quot;filter form-select-sm&quot; aria-label=&quot;.form-select-sm example&quot; id=&quot;filter_by_place&quot;&gt;
+          &lt;option selected&gt;Choose district&lt;/option&gt;
+          &lt;option value=&quot;admiralteysky&quot;&gt;Admiralteysky&lt;/option&gt;
+          &lt;option value=&quot;petrogradsky&quot;&gt;Petrogradsky&lt;/option&gt;
+          &lt;option value=&quot;moskovsky&quot;&gt;Moskovsky&lt;/option&gt;
+          &lt;option value=&quot;tsentralny&quot;&gt;Tsentralny&lt;/option&gt;
+          &lt;option value=&quot;vasileostrovsky&quot;&gt;Vasileostrovsky&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+    &lt;section id=&quot;event_cards&quot; class=&quot;container justify-content-center row mx-auto mt-3&quot;&gt;
+      &lt;div class=&quot;card event col-xl-4 col-lg-4 col-md-4 col-sm-6 card mx-3 mt-3&quot; :class=&quot;[card.district, card.type]&quot;
+           v-for=&quot;card in Cards&quot; :key=&quot;card.id&quot;&gt;
+        &lt;card :title=&quot;card.title&quot; :address=&quot;card.address&quot; :img_src=&quot;card.img_src&quot;
+              :short_description=&quot;card.short_description&quot; :id=&quot;card.id&quot;&gt;&lt;/card&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import {mapActions, mapState} from &quot;pinia&quot;;
+import Card from &quot;@/components/Card.vue&quot;
+import useCardsStore from &quot;@/stores/cards.js&quot;;
+
+export default {
+  name: &quot;MainBlock&quot;,
+  components: {Card},
+  computed: {
+    ...mapState(useCardsStore, ['cards']),
+    Cards() {
+      return this.cards
+    }
+  },
+  methods: {
+    ...mapActions(useCardsStore, ['loadCards']),
+    async filter() {
+      let selectedPlace = document.getElementById(&quot;filter_by_place&quot;).value;
+      let selectedType = document.getElementById(&quot;filter_by_type&quot;).value;
+      const cards = document.getElementsByClassName(&quot;event&quot;);
+      console.log(cards)
+      for (let i = 0; i &lt; cards.length; i++) {
+        if ((cards[i].classList.contains(selectedPlace) || selectedPlace === &quot;Choose district&quot;) &amp;&amp;
+            (cards[i].classList.contains(selectedType) || selectedType === &quot;Event type&quot;)) {
+          cards[i].classList.remove(&quot;d-none&quot;);
+        } else {
+          cards[i].classList.add(&quot;d-none&quot;);
+        }
+      }
+      console.log(cards)
+    }
+  },
+  mounted() {
+    this.loadCards();
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Profile.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; display=&quot;none&quot;&gt;
+    &lt;symbol id=&quot;Edit&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;path
+          d=&quot;M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z&quot;/&gt;
+      &lt;path
+          d=&quot;M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z&quot;/&gt;
+    &lt;/symbol&gt;
+    &lt;symbol id=&quot;Done&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+      &lt;path
+          d=&quot;M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z&quot;/&gt;
+      &lt;path d=&quot;M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z&quot;/&gt;
+    &lt;/symbol&gt;
+  &lt;/svg&gt;
+  &lt;main class=&quot;container p-5 mb-5&quot;&gt;
+    &lt;section id=&quot;user_profile&quot; class=&quot;container row mx-auto&quot;&gt;
+      &lt;section&gt;
+        &lt;div class=&quot;row d-flex col-md-5 col-lg-4 col-xl-4 col-sm-8&quot; style=&quot;float: left; margin-right: 10px&quot;&gt;
+          &lt;img id=&quot;user_image&quot; :src=&quot;user.img_url&quot; alt=&quot;User image&quot; style=&quot;float: left; border-radius: 10%&quot;&gt;
+          &lt;input v-show=&quot;upload_input&quot; type=&quot;file&quot; id=&quot;user_image&quot; accept=&quot;image/*&quot; @change=&quot;handleUpload&quot;
+                 ref=&quot;user_photo&quot;&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;row d-flex col-xl-6 col-lg-8 col-md-8 col-sm-12&quot; style=&quot;float: none&quot;&gt;
+          &lt;h1 id=&quot;user_name&quot; class=&quot;text&quot;&gt;{{ user.first_name }} {{ user.last_name }}&lt;/h1&gt;
+          &lt;p id=&quot;user_login&quot; class=&quot;text&quot; style=&quot;font-size: 14pt&quot;&gt;{{ user.email }}&lt;/p&gt;
+          &lt;p v-if=&quot;user.user_info === null&quot; id=&quot;user_info&quot; ref=&quot;info&quot; class=&quot;info text placeholder_text mt-1&quot;&gt;Tell
+            something
+            about yourself&lt;/p&gt;
+          &lt;p v-else id=&quot;user_info&quot; ref=&quot;info&quot; class=&quot;info text placeholder_text&quot;&gt;{{ user.user_info }}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;div&gt;
+        &lt;button class=&quot;btn btn-primary mx-1 mt-3&quot; type=&quot;button&quot; @click=&quot;edit&quot; id=&quot;edit-button&quot; ref=&quot;edit_btn&quot;
+                aria-pressed=&quot;true&quot; :disabled=&quot;!isActive&quot;&gt;Edit
+          profile
+          &lt;svg class=&quot;icon&quot;&gt;
+            &lt;use xlink:href=&quot;#Edit&quot;&gt;&lt;/use&gt;
+          &lt;/svg&gt;
+        &lt;/button&gt;
+        &lt;button class=&quot;btn btn-success invisible mt-3&quot; type=&quot;button&quot; @click=&quot;done&quot; ref=&quot;done_btn&quot; id=&quot;done-button&quot;
+                aria-pressed=&quot;true&quot;&gt;Done
+          &lt;svg class=&quot;icon&quot;&gt;
+            &lt;use xlink:href=&quot;#Done&quot;&gt;&lt;/use&gt;
+          &lt;/svg&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;button class=&quot;btn btn-secondary mt-3 mx-1&quot; @click=&quot;logout_btn&quot; type=&quot;button&quot; aria-pressed=&quot;true&quot;&gt;Logout
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+    &lt;section id=&quot;user_events&quot; class=&quot;container row mx-auto justify-content-center&quot;&gt;
+      &lt;p class=&quot;text mt-4&quot; style=&quot;font-size: 20pt&quot;&gt;&lt;b&gt;Your events:&lt;/b&gt;&lt;/p&gt;
+      &lt;div class=&quot;card event col-xl-4 col-lg-4 col-md-4 col-sm-6 card mx-3 mt-3&quot;
+           v-for=&quot;event in Events&quot; :key=&quot;event.id&quot;&gt;
+        &lt;card :title=&quot;event.title&quot; :address=&quot;event.address&quot; :img_src=&quot;event.img_src&quot;
+              :short_description=&quot;event.short_description&quot; :id=&quot;event.id&quot;&gt;&lt;/card&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import {mapActions, mapState} from &quot;pinia&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+import Card from &quot;@/components/Card.vue&quot;;
+
+export default {
+  name: &quot;Profile&quot;,
+  components: {Card},
+  data() {
+    return {
+      isActive: true,
+      upload_input: false,
+    }
+  },
+  computed: {
+    ...mapState(useUsersStore, ['user', 'token', 'userEvents']),
+    Events() {
+      return this.userEvents
+    }
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['logout', 'CurrentUser', 'getUserEvents']),
+
+
+    async logout_btn() {
+      // window.localStorage.removeItem('user_token')
+      await this.logout()
+      this.$router.push('/signin')
+    },
+
+    edit() {
+      this.$refs[&quot;info&quot;].innerHTML = ''
+      this.$refs[&quot;info&quot;].contentEditable = 'true'
+      this.$refs[&quot;done_btn&quot;].classList.replace('invisible', 'visible')
+      this.isActive = false
+      this.upload_input = true
+    },
+
+    async done() {
+      this.$refs[&quot;info&quot;].contentEditable = 'false'
+      this.$refs[&quot;info&quot;].classList.remove('placeholder_text')
+      this.$refs[&quot;done_btn&quot;].classList.replace('visible', 'invisible')
+      let user_input = this.$refs[&quot;info&quot;].innerHTML
+      let image_input = this.$refs.user_photo.files[0]
+      this.isActive = true
+      this.upload_input = false
+
+      if (image_input !== undefined) {
+        let data = new FormData()
+        data.append('image_url', image_input)
+
+        const response = await fetch(`http://localhost:8000/api/user/edit/${this.user.id}/`, {
+          method: &quot;PUT&quot;,
+          body: data,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        console.log(response)
+        console.log(this.user)
+      }
+
+      if (user_input === '') {
+      } else {
+        let user_input_send = {'user_info': `${user_input}`}
+
+        const response = await fetch(`http://localhost:8000/api/user/edit/${this.user.id}/`, {
+          method: &quot;PUT&quot;,
+          body: JSON.stringify(user_input_send),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        console.log(response)
+      }
+    },
+  },
+  mounted() {
+    this.CurrentUser().then(result =&gt; {
+      if (!result?.username) {
+        this.$router.replace({path: '/main'})
+      }
+      this.getUserEvents()
+    })
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>FullCalendar.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;div class=&quot;container p-5 mb-5&quot;&gt;
+    &lt;full-calendar :options=&quot;calendarOptions&quot;/&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+
+const DEFAULT_OPTIONS = {
+  plugins: [dayGridPlugin, interactionPlugin],
+  initialView: 'dayGridMonth',
+  editable: true,
+  timeZone: 'UTC',
+  eventTimeFormat: {
+    hour: '2-digit',
+    minute: '2-digit',
+    meridiem: false,
+    hour12: false,
+  }
+}
+
+
+export default {
+  components: {
+    FullCalendar
+  },
+
+  props: {
+    options: {
+      type: Object,
+      default: DEFAULT_OPTIONS,
+    }
+  },
+
+  computed: {
+    calendarOptions() {
+      return {...DEFAULT_OPTIONS, ...this.options}
+    }
+  }
+}
+&lt;/script&gt;
+
+&lt;style&gt;
+.fc-event-title {
+  white-space: normal;
+  margin-left: 5px;
+}
+&lt;/style&gt;
+</code></pre>
+<p><em>Signin.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;main class=&quot;container-xl p-5 mb-5&quot;&gt;
+    &lt;h1 class=&quot;row mb-4 mt-4 justify-content-center&quot;&gt;Sign in&lt;/h1&gt;
+    &lt;form&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row mt-3 justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                v-model=&quot;username&quot;
+                type=&quot;text&quot;
+                class=&quot;form-control&quot;
+                name=&quot;username&quot;
+                placeholder=&quot;Username&quot;
+                id=&quot;floatingUsername&quot;
+                required&gt;
+            &lt;label for=&quot;floatingUsername&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4 text-center&quot;&gt;
+            &lt;input
+                v-model=&quot;password&quot;
+                type=&quot;password&quot;
+                class=&quot;form-control&quot;
+                name=&quot;password&quot;
+                id=&quot;floatingPassword&quot;
+                placeholder=&quot;Password&quot;
+                required&gt;
+            &lt;label for=&quot;floatingPassword&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p
+          v-if=&quot;err&quot;
+          class=&quot;login-error text-danger text-center&quot;&gt;
+        &lt;strong&gt;{{ err }}&lt;/strong&gt;
+      &lt;/p&gt;
+      &lt;div class=&quot;row justify-content-center&quot;&gt;
+        &lt;div class=&quot;col-xl-1 col-lg-1 col-md-2 col-sm-2 text-center&quot;&gt;
+          &lt;button type=&quot;button&quot; @click=&quot;signin&quot; class=&quot;btn btn-primary&quot; aria-pressed=&quot;true&quot; id=&quot;register&quot;&gt;Login&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+    &lt;div class=&quot;row mt-3&quot;&gt;
+      &lt;router-link to=&quot;/signup&quot;&gt;Register&lt;/router-link&gt;
+    &lt;/div&gt;
+
+  &lt;/main&gt;
+
+&lt;/template&gt;
+
+&lt;script&gt;
+import {mapActions} from &quot;pinia&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+
+export default {
+  name: &quot;Signin&quot;,
+  data() {
+    return {
+      username: &quot;&quot;,
+      password: &quot;&quot;,
+      err: &quot;&quot;
+    };
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['login']),
+    async signin() {
+      this.err = ''
+      if (!this.username || !this.password) {
+        this.err = 'Error! Enter username and password!'
+        return
+      }
+      try {
+        await this.login({
+          username: this.username,
+          password: this.password
+        })
+      } catch (e) {
+        this.err = 'Wrong password or username! Try again!'
+        return
+      }
+      this.$router.push('/main')
+    }
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Signup.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;main class=&quot;container-xl p-5 mb-5&quot;&gt;
+    &lt;h1 class=&quot;row mb-4 mt-4 justify-content-center&quot;&gt;Sign up&lt;/h1&gt;
+    &lt;form class=&quot;signup-form&quot; action=&quot;http://localhost:8000/api/users/list&quot; method=&quot;POST&quot;&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row mt-3 justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                v-model=&quot;username&quot;
+                type=&quot;text&quot;
+                class=&quot;form-control&quot;
+                name=&quot;username&quot;
+                placeholder=&quot;Username&quot;
+                id=&quot;floatingUsername&quot;
+                required&gt;
+            &lt;label for=&quot;floatingUsername&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                v-model=&quot;first_name&quot;
+                type=&quot;text&quot;
+                class=&quot;form-control&quot;
+                name=&quot;first_name&quot;
+                placeholder=&quot;First name&quot;
+                id=&quot;floatingName&quot;
+                required&gt;
+            &lt;label for=&quot;floatingName&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                v-model=&quot;last_name&quot;
+                type=&quot;text&quot;
+                class=&quot;form-control&quot;
+                name=&quot;last_name&quot;
+                placeholder=&quot;Last name&quot;
+                id=&quot;floatingLastname&quot;
+                required&gt;
+            &lt;label for=&quot;floatingLastname&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                v-model=&quot;email&quot;
+                type=&quot;text&quot;
+                class=&quot;form-control&quot;
+                name=&quot;email&quot;
+                placeholder=&quot;Email&quot;
+                id=&quot;floatingEmail&quot;
+                required&gt;
+            &lt;label for=&quot;floatingEmail&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4 text-center&quot;&gt;
+            &lt;input
+                v-model=&quot;password&quot;
+                type=&quot;password&quot;
+                class=&quot;form-control&quot;
+                name=&quot;password&quot;
+                id=&quot;floatingPassword&quot;
+                placeholder=&quot;Password&quot;
+                required&gt;
+            &lt;label for=&quot;floatingPassword&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;form-floating&quot;&gt;
+        &lt;div class=&quot;row justify-content-center&quot;&gt;
+          &lt;div class=&quot;col-sm-3 col-md-4&quot;&gt;
+            &lt;input
+                @change=&quot;uploadFile&quot;
+                ref=&quot;file&quot;
+                type=&quot;file&quot;
+                class=&quot;form-control&quot;
+                name=&quot;img_url&quot;
+                placeholder=&quot;Place your profile image url&quot;
+                id=&quot;floatingImage&quot;&gt;
+            &lt;label for=&quot;floatingImage&quot;&gt;&lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p
+          v-if=&quot;err&quot;
+          class=&quot;login-error text-danger text-center&quot;&gt;
+        &lt;strong&gt;{{ err }}&lt;/strong&gt;
+      &lt;/p&gt;
+      &lt;div class=&quot;row justify-content-center&quot;&gt;
+        &lt;div class=&quot;col-xl-1 col-lg-1 col-md-2 col-sm-2 text-center&quot;&gt;
+          &lt;button type=&quot;button&quot; @click=&quot;signup&quot; class=&quot;btn btn-primary&quot; aria-pressed=&quot;true&quot; id=&quot;register&quot;&gt;Register&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
+  &lt;/main&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import useUsersStore from &quot;@/stores/users&quot;;
+import {mapActions} from &quot;pinia&quot;;
+
+export default {
+  name: &quot;Signup&quot;,
+  data() {
+    return {
+      username: &quot;&quot;,
+      password: &quot;&quot;,
+      first_name: &quot;&quot;,
+      last_name: &quot;&quot;,
+      email: &quot;&quot;,
+      img_url: null,
+      err: &quot;&quot;
+    };
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['signUp', 'login']),
+    uploadFile() {
+      this.img_url = this.$refs.file.files[0];
+    },
+    async signup() {
+      this.err = ''
+      if (!this.email || !this.password || !this.username || !this.first_name || !this.last_name) {
+        this.err = 'Error! Fill in required fields!'
+        return
+      }
+      let result = null
+      try {
+        result = await this.signUp({
+          username: this.username,
+          first_name: this.first_name,
+          last_name: this.last_name,
+          email: this.email,
+          password: this.password,
+          img_url: this.img_url
+        })
+      } catch (e) {
+        this.err = 'Error!'
+        return
+      }
+
+      if (result?.status === 201) {
+        await this.login({
+          username: this.username,
+          password: this.password
+        })
+        this.$router.push('/main')
+      }
+    }
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Header.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header class=&quot;container-fluid&quot;&gt;
+    &lt;nav class=&quot;navbar navbar-expand-md&quot;&gt;
+      &lt;div class=&quot;container-fluid&quot;&gt;
+        &lt;button class=&quot;navbar-toggler&quot; data-bs-toggle=&quot;collapse&quot; data-bs-target=&quot;#navbar&quot; id=&quot;Menu_btn&quot;
+                aria-label=&quot;Menu&quot;&gt;
+          &lt;span class=&quot;navbar-toggler-icon&quot;&gt;&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;div class=&quot;collapse navbar-collapse&quot; id=&quot;navbar&quot;&gt;
+          &lt;ul class=&quot;navbar-nav&quot;&gt;
+            &lt;li class=&quot;nav-item&quot;&gt;
+              &lt;router-link class=&quot;nav-link active&quot; to=&quot;/main&quot;&gt;Main&lt;/router-link&gt;
+            &lt;/li&gt;
+            &lt;li class=&quot;nav-item signinup_link&quot;&gt;
+              &lt;router-link class=&quot;nav-link active&quot; to=&quot;/signin&quot;&gt;Sign in&lt;/router-link&gt;
+            &lt;/li&gt;
+            &lt;li class=&quot;nav-item signinup_link&quot;&gt;
+              &lt;router-link class=&quot;nav-link active&quot; to=&quot;/signup&quot;&gt;Sign up&lt;/router-link&gt;
+            &lt;/li&gt;
+            &lt;li class=&quot;nav-item profile_link&quot;&gt;
+              &lt;router-link class=&quot;nav-link active&quot; to=&quot;/profile&quot;&gt;Profile&lt;/router-link&gt;
+            &lt;/li&gt;
+            &lt;li class=&quot;nav-item profile_link&quot;&gt;
+              &lt;router-link class=&quot;nav-link active&quot; to=&quot;/calendar&quot;&gt;Calendar&lt;/router-link&gt;
+            &lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &quot;HeaderBlock&quot;,
+  methods: {
+    show_menu() {
+      let token = localStorage.getItem('user_token')
+      console.log(token)
+      if (token !== null) {
+        let menu_items = document.getElementsByClassName(&quot;signinup_link&quot;)
+        while (menu_items.length &gt; 0) {
+          menu_items.item(0).parentNode.removeChild(menu_items.item(0))
+        }
+      } else {
+        let menu_items = document.getElementsByClassName(&quot;profile_link&quot;)
+        while (menu_items.length &gt; 0) {
+          menu_items.item(0).parentNode.removeChild(menu_items.item(0))
+        }
+      }
+    }
+  },
+  mounted() {
+    this.show_menu()
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Footer.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;footer&gt;
+    &lt;p&gt;&amp;copy 2022, Konik Anastasia&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: &quot;FooterBlock&quot;
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><code>views</code></p>
+<p><em>MainPage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+    &lt;header-block /&gt;
+    &lt;main-block /&gt;
+    &lt;footer-block /&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapActions, mapState } from 'pinia'
+import useCardsStore from '@/stores/cards'
+import HeaderBlock from '@/components/Header.vue'
+import MainBlock from '@/components/Main.vue'
+import FooterBlock from '@/components/Footer.vue'
+
+export default{
+    name: 'MainPage',
+    components: { HeaderBlock, MainBlock, FooterBlock },
+  computed: {
+    ...mapState(useCardsStore, ['cards'])
+  },
+  methods: {
+    ...mapActions(useCardsStore, ['loadCards']),
+  },
+}
+&lt;/script&gt;
+</code></pre>
+<p><em>EventPage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header-block/&gt;
+  &lt;event-block
+      :address=&quot;cards[parseInt($route.params.id) - 1].address&quot;
+      :date=&quot;cards[parseInt($route.params.id) -1].date&quot;
+      :full_description=&quot;cards[parseInt($route.params.id) - 1].full_description&quot;
+      :id=&quot;cards[parseInt($route.params.id) - 1].id&quot;
+      :img_src=&quot;cards[parseInt($route.params.id) - 1 ].img_src&quot;
+      :short_description=&quot;cards[parseInt($route.params.id)- 1].short_description&quot;
+      :title=&quot;cards[parseInt($route.params.id) - 1].title&quot;
+      :website=&quot;cards[parseInt($route.params.id) - 1].website&quot;/&gt;
+  &lt;footer-block/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import {mapActions, mapState} from 'pinia'
+import HeaderBlock from '../components/Header.vue'
+import EventBlock from '../components/Event.vue'
+import FooterBlock from '../components/Footer.vue'
+import {useRoute} from &quot;vue-router&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+import useCardsStore from &quot;@/stores/cards&quot;;
+
+export default {
+  name: 'EventPage',
+  components: {HeaderBlock, EventBlock, FooterBlock},
+  computed: {
+    ...mapState(useUsersStore, ['user', 'token']),
+    ...mapState(useCardsStore, [&quot;cards&quot;]),
+    EventId() {
+      const route = useRoute();
+      return parseInt(route.params.id)
+    }
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['addUserEvent']),
+    ...mapActions(useCardsStore, ['loadOneCard']),
+  },
+  mounted() {
+    this.loadOneCard(this.EventId);
+  }
+}
+&lt;/script&gt;
+</code></pre>
+<p><em>ProfilePage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header-block/&gt;
+  &lt;user-block/&gt;
+  &lt;footer-block/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import HeaderBlock from &quot;@/components/Header.vue&quot;;
+import FooterBlock from &quot;@/components/Footer.vue&quot;;
+import UserBlock from &quot;@/components/Profile.vue&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+import {mapActions, mapState} from &quot;pinia&quot;;
+
+export default {
+  name: &quot;ProfilePage&quot;,
+  components: {FooterBlock, UserBlock, HeaderBlock},
+  computed: {
+   ...mapState(useUsersStore, ['user', 'token', 'userEvents']),
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['logout', 'CurrentUser']),
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>SignInPage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header-block/&gt;
+  &lt;signin-block/&gt;
+  &lt;footer-block/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import HeaderBlock from &quot;@/components/Header.vue&quot;;
+import SigninBlock from &quot;@/components/Signin.vue&quot;;
+import FooterBlock from &quot;@/components/Footer.vue&quot;;
+import {mapActions, mapState} from &quot;pinia&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+
+
+export default {
+  name: &quot;SignInPage&quot;,
+  components: {HeaderBlock, SigninBlock, FooterBlock},
+  computed: {
+    ...mapState(useUsersStore, ['user'])
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['login'])
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>SignupPage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header-block/&gt;
+  &lt;signup-block/&gt;
+  &lt;footer-block/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import HeaderBlock from &quot;@/components/Header.vue&quot;;
+import FooterBlock from &quot;@/components/Footer.vue&quot;;
+import SignupBlock from &quot;@/components/Signup.vue&quot;;
+import {mapActions, mapState} from &quot;pinia&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+
+export default {
+  name: &quot;SignUpPage&quot;,
+  components: {HeaderBlock, SignupBlock, FooterBlock},
+  computed: {
+    ...mapState(useUsersStore, ['user'])
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['login, signUp'])
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>CalendarPage.vue</em></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header-block/&gt;
+  &lt;full-calendar
+      :options=&quot;{
+    events: userEvents,
+  }&quot;
+  /&gt;
+  &lt;footer-block/&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import HeaderBlock from &quot;@/components/Header.vue&quot;;
+import FullCalendar from &quot;@/components/FullCalendar.vue&quot;;
+import FooterBlock from &quot;@/components/Footer.vue&quot;;
+import useUsersStore from &quot;@/stores/users&quot;;
+import {mapActions, mapState} from &quot;pinia&quot;;
+
+export default {
+  name: &quot;CalendarPage&quot;,
+  components: {FooterBlock, FullCalendar, HeaderBlock},
+  computed: {
+    ...mapState(useUsersStore, ['userEvents'])
+  },
+  methods: {
+    ...mapActions(useUsersStore, ['getUserEvents'])
+  },
+  mounted() {
+    this.getUserEvents()
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+
+&lt;/style&gt;
+</code></pre>
+<p><em>Примеры из сайта:</em></p>
+<p><img alt="img_12.png" src="../img_12.png" /></p>
+<p><img alt="img_13.png" src="../img_13.png" /></p>
+<p><img alt="img_14.png" src="../img_14.png" /></p>
+<p><img alt="img_15.png" src="../img_15.png" /></p>
+<p><img alt="img_16.png" src="../img_16.png" /></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js" defer></script>
+        <script src="../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
